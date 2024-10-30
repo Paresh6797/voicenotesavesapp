@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../../core/colors/app_colors.dart';
 import '../../../core/constants/font_weight.dart';
 import '../../../data/model/user.dart';
+import '../../../logic/cubit/voice_note/voice_note_cubit.dart';
 import '../../widgets/custom_text.dart';
 
 class UserDetailScreen extends StatefulWidget {
@@ -17,6 +19,39 @@ class UserDetailScreen extends StatefulWidget {
 
 class _UserDetailScreenState extends State<UserDetailScreen> {
   bool isRecording = false;
+
+  Future<void> _checkPermissions() async {
+    if (await Permission.microphone.request().isGranted) {
+      // Permission granted
+    } else {
+      // Handle permission denied
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text(
+                'Microphone permission is required to record voice notes.')),
+      );
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _checkPermissions();
+    // Load voice notes for the specific user ID
+    context.read<VoiceNoteCubit>().loadVoiceNotes(widget.user.id.toString());
+  }
+
+  void _toggleRecording() async {
+    if (isRecording) {
+      await context.read<VoiceNoteCubit>().stopRecording(widget.user.id.toString());
+      setState(() => isRecording = false);
+    } else {
+      setState(() => isRecording = true);
+      await context
+          .read<VoiceNoteCubit>()
+          .startRecording(widget.user.id.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,24 +124,41 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
               clr: black101010Color,
             ),
             Expanded(
-              child: ListView.builder(
-                itemCount: widget.user.voiceNotes.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text('Voice Note ${index + 1}'),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.play_arrow),
-                      onPressed: () {
-
-                      },
-                    ),
+              child: BlocBuilder<VoiceNoteCubit, List<String>>(
+                builder: (context, voiceNotes) {
+                  if (voiceNotes.isEmpty) {
+                    return Container();
+                  }
+                  return ListView.builder(
+                    itemCount: voiceNotes.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: CustomText(
+                          text: "'Voice Note ${index + 1}'",
+                          size: 14,
+                          fontWeight: normal,
+                          clr: black101010Color,
+                        ),
+                        trailing: IconButton(
+                          icon: const Icon(
+                            Icons.play_arrow,
+                          ),
+                          onPressed: () => context.read<VoiceNoteCubit>().playRecording(voiceNotes[index]),
+                        ),
+                      );
+                    },
                   );
                 },
               ),
             ),
             ElevatedButton(
-              onPressed: () {},
-              child: Text(isRecording ? 'Stop Recording' : 'Record Voice Note'),
+              onPressed: _toggleRecording,
+              child: CustomText(
+                text: isRecording ? 'Stop Recording' : 'Start Recording',
+                size: 14,
+                fontWeight: normal,
+                clr: black101010Color,
+              ),
             ),
           ],
         ),

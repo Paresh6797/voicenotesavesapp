@@ -1,16 +1,33 @@
-# voicenotesavesapp
+# Voice Note App
 
-A new Flutter project.
+## Overview
+
+This is a simple user management and voice note saving capabilities application built with Flutter.
+
+## Prerequisites
+
+Before running this application, ensure you have the following installed:
+
+- [Flutter](https://flutter.dev/docs/get-started/install) (version 3.24.4 stable channel)
+- Dart SDK (comes with Flutter)
+- An IDE such as [Android Studio](https://developer.android.com/studio) or [Visual Studio Code](https://code.visualstudio.com/)
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+### 1. Clone the Repository
 
-A few resources to get you started if this is your first Flutter project:
+If you haven't done so already, clone the repository:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+git clone https://github.com/Paresh6797/voicenotesavesapp.git
+cd voicenotesavesapp
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### 2. Dart EntryPoint Configuration
+
+Please make sure there is a Dart entry point in the configuration
+like as '/Users/username/voicenotesavesapp/lib/core/main/main.dart'
+run
+
+### 3. Build Apk
+
+Run the following command to build the APK
+"flutter build apk  -t ./lib/core/main/main.dart"
