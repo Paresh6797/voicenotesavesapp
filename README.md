@@ -45,7 +45,7 @@ To build the iOS App, run the following command:
 "flutter build ios -t ./lib/core/main/main.dart"
 ```
 
-### 3. Dummy Login Credentials
+### 4. Dummy Login Credentials
 You can use the following credentials to log in:
 
 - **Email:** demo@gmail.com
